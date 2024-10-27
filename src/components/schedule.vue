@@ -108,7 +108,6 @@ const timezone = ref(getTimeZone());
 // get the current week's days based on the timezone and locale
 const getCurrentWeekDays = () => {
   const now = DateTime.local();
-
   const startOfWeek = now.startOf("week", { useLocaleWeeks: true });
 
   const weekDays = [];
@@ -116,18 +115,22 @@ const getCurrentWeekDays = () => {
     const day = startOfWeek.plus({ days: i });
     weekDays.push({
       date: day,
-      name: day.toFormat("ccc dd/MM"), // Localized day name (e.g., Sun 20/10)
+      name: day.toLocaleString({
+        day: "numeric",
+        month: "numeric",
+        weekday: "short",
+      }),
       isCurrent: day.toISODate() === now.toISODate(),
     });
   }
   return weekDays;
 };
+const days = ref(getCurrentWeekDays());
 
 // Time range for the calendar
 const startHour = ref(0);
 const endHour = ref(24);
 const timeSlots = ref([]);
-const days = ref(getCurrentWeekDays());
 
 // Dummy events array for the week (using the timezone)
 const events = ref([
